@@ -5,6 +5,8 @@ const initialState = {
   filterValue: 'all',
   isModalOpen: false,
   editingTask: null,
+  inlineEditingTaskId: null,
+  inlineEditValue: '',
 };
 
 const uiSlice = createSlice({
@@ -32,6 +34,22 @@ const uiSlice = createSlice({
       state.isModalOpen = false;
       state.editingTask = null;
     },
+    startInlineEdit: (state, action) => {
+      const { taskId, currentTitle } = action.payload;
+      state.inlineEditingTaskId = taskId;
+      state.inlineEditValue = currentTitle;
+    },
+    updateInlineEditValue: (state, action) => {
+      state.inlineEditValue = action.payload;
+    },
+    cancelInlineEdit: (state) => {
+      state.inlineEditingTaskId = null;
+      state.inlineEditValue = '';
+    },
+    completeInlineEdit: (state) => {
+      state.inlineEditingTaskId = null;
+      state.inlineEditValue = '';
+    },
   },
 });
 
@@ -42,6 +60,10 @@ export const {
   openModal,
   openEditModal,
   closeModal,
+  startInlineEdit,
+  updateInlineEditValue,
+  cancelInlineEdit,
+  completeInlineEdit,
 } = uiSlice.actions;
 
 // Selectors
@@ -49,5 +71,7 @@ export const selectSearchValue = (state) => state.ui.searchValue;
 export const selectFilterValue = (state) => state.ui.filterValue;
 export const selectIsModalOpen = (state) => state.ui.isModalOpen;
 export const selectEditingTask = (state) => state.ui.editingTask;
+export const selectInlineEditingTaskId = (state) => state.ui.inlineEditingTaskId;
+export const selectInlineEditValue = (state) => state.ui.inlineEditValue;
 
 export default uiSlice.reducer;

@@ -15,9 +15,15 @@ import {
 import {
   selectIsModalOpen,
   selectEditingTask,
+  selectInlineEditingTaskId,
+  selectInlineEditValue,
   openModal,
   openEditModal,
-  closeModal
+  closeModal,
+  startInlineEdit,
+  updateInlineEditValue,
+  cancelInlineEdit,
+  completeInlineEdit
 } from '../store/slices/uiSlice';
 import TaskList from '../utils/TaskList';
 import TaskModal from '../utils/TaskModal';
@@ -32,6 +38,8 @@ const TaskManager = () => {
   const isLoading = useSelector(selectIsLoading);
   const isModalOpen = useSelector(selectIsModalOpen);
   const editingTask = useSelector(selectEditingTask);
+  const inlineEditingTaskId = useSelector(selectInlineEditingTaskId);
+  const inlineEditValue = useSelector(selectInlineEditValue);
 
   // Simulate loading on component mount
   useEffect(() => {
@@ -74,6 +82,28 @@ const TaskManager = () => {
     dispatch(clearCompleted());
   };
 
+  const handleStartInlineEdit = (taskId, currentTitle) => {
+    dispatch(startInlineEdit({ taskId, currentTitle }));
+  };
+
+  const handleUpdateInlineEditValue = (value) => {
+    dispatch(updateInlineEditValue(value));
+  };
+
+  const handleSaveInlineEdit = () => {
+    if (inlineEditValue.trim() && inlineEditingTaskId) {
+      dispatch(updateTask({ 
+        id: inlineEditingTaskId, 
+        title: inlineEditValue.trim() 
+      }));
+    }
+    dispatch(completeInlineEdit());
+  };
+
+  const handleCancelInlineEdit = () => {
+    dispatch(cancelInlineEdit());
+  };
+
   if (isLoading) {
     return (
       <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
@@ -110,6 +140,12 @@ const TaskManager = () => {
           onDeleteTask={handleDeleteTask} 
           onToggleComplete={handleToggleTaskCompletion}
           onEditTask={handleOpenEditModal}
+          inlineEditingTaskId={inlineEditingTaskId}
+          inlineEditValue={inlineEditValue}
+          onStartInlineEdit={handleStartInlineEdit}
+          onUpdateInlineEditValue={handleUpdateInlineEditValue}
+          onSaveInlineEdit={handleSaveInlineEdit}
+          onCancelInlineEdit={handleCancelInlineEdit}
         />
       </div>
 
