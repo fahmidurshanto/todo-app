@@ -1,5 +1,7 @@
 import React from 'react';
 import { FaTrash, FaRegEdit } from 'react-icons/fa';
+import { CiCalendarDate } from "react-icons/ci";
+
 
 const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
   const formatDate = (dateString) => {
@@ -9,30 +11,51 @@ const TaskItem = ({ task, onDelete, onToggleComplete, onEdit }) => {
   };
 
   return (
-    <div className="flex justify-between items-center p-4 border-b border-gray-200 hover:bg-gray-50">
+    <div className={`flex justify-between items-center p-4 border-b border-gray-200 ${
+      task.completed 
+        ? 'bg-gray-50 hover:bg-gray-100' 
+        : 'hover:bg-gray-50'
+    }`}>
       <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          checked={task.completed || false}
-          onChange={() => onToggleComplete(task.id)}
-          className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-        />
+        {!task.completed && (
+          <input
+            type="checkbox"
+            checked={task.completed || false}
+            onChange={() => onToggleComplete(task.id)}
+            className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+          />
+        )}
+        {task.completed && (
+          <div className="w-4 h-4 flex items-center justify-center">
+            <span className="text-green-600 text-lg font-bold">✓</span>
+          </div>
+        )}
         <div className='flex flex-col gap-1'>
-          <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-400' : ''}`}>
+          <h3 className={`text-lg font-semibold ${
+            task.completed 
+              ? 'line-through text-gray-400' 
+              : 'text-gray-800'
+          }`}>
             {task.title}
           </h3>
-          <p className='text-gray-500 text-sm'>{task.description}</p>
+          <p className={`text-sm ${
+            task.completed 
+              ? 'text-gray-400 line-through' 
+              : 'text-gray-500'
+          }`}>{task.description}</p>
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-gray-600">{formatDate(task.date)}</span>
+        <span className="text-gray-600 flex items-center gap-2"><CiCalendarDate className='text-2xl'/> {formatDate(task.date)}</span>
         
-        <button 
-          onClick={onEdit}
-          className="text-gray-500 hover:text-blue-500"
-        >
-          <FaRegEdit className='text-xl'/>
-        </button>
+        {!task.completed && (
+          <button 
+            onClick={onEdit}
+            className="text-gray-500 hover:text-blue-500"
+          >
+            <FaRegEdit className='text-xl'/>
+          </button>
+        )}
         
         <button 
           onClick={onDelete}
