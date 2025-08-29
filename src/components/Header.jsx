@@ -1,6 +1,9 @@
 import React from "react";
+import { useSelector } from 'react-redux';
+import { selectTaskCounts } from '../store/slices/tasksSlice';
 
-const Header = ({ allCount = 0, activeCount = 0, completedCount = 0 }) => {
+const Header = () => {
+  const { allCount, activeCount, completedCount } = useSelector(selectTaskCounts);
   return (
     <div className="rounded-xl px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-5 md:py-6 w-full max-w-6xl mx-auto bg-white shadow-lg mb-4">
       <ul className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0 font-bold text-gray-700">

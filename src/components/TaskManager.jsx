@@ -1,95 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectIsLoading,
+  selectFilteredTasks,
+  selectFilteredTaskCounts,
+  addTask,
+  updateTask,
+  deleteTask,
+  toggleTaskCompletion,
+  setLoading
+} from '../store/slices/tasksSlice';
+import {
+  selectIsModalOpen,
+  selectEditingTask,
+  openModal,
+  openEditModal,
+  closeModal
+} from '../store/slices/uiSlice';
 import TaskList from '../utils/TaskList';
 import TaskModal from '../utils/TaskModal';
 import AddTaskButton from '../utils/AddTaskButton';
 
 const TaskManager = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
-  const [tasks, setTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const filteredTasks = useSelector(selectFilteredTasks);
+  const { filteredCount, totalCount, hasActiveFilters } = useSelector(selectFilteredTaskCounts);
+  const isLoading = useSelector(selectIsLoading);
+  const isModalOpen = useSelector(selectIsModalOpen);
+  const editingTask = useSelector(selectEditingTask);
 
-  // Load tasks from localStorage on component mount
+  // Simulate loading on component mount
   useEffect(() => {
-    const loadTasks = () => {
-      try {
-        const storedTasks = localStorage.getItem('tasks');
-        if (storedTasks) {
-          const parsedTasks = JSON.parse(storedTasks);
-          setTasks(parsedTasks);
-        }
-      } catch (error) {
-        console.error('Error loading tasks from localStorage:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadTasks();
-  }, []);
+    dispatch(setLoading(true));
+    // Simulate async loading
+    setTimeout(() => {
+      dispatch(setLoading(false));
+    }, 100);
+  }, [dispatch]);
 
-  // Save tasks to localStorage whenever tasks change
-  useEffect(() => {
-    if (!isLoading) {
-      try {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-      } catch (error) {
-        console.error('Error saving tasks to localStorage:', error);
-        // Handle quota exceeded error
-        if (error.name === 'QuotaExceededError') {
-          alert('Storage limit exceeded. Some tasks may not be saved.');
-        }
-      }
-    }
-  }, [tasks, isLoading]);
-
-  const openModal = () => {
-    setEditingTask(null);
-    setIsModalOpen(true);
+  const handleOpenModal = () => {
+    dispatch(openModal());
   };
 
-  const openEditModal = (task) => {
-    setEditingTask(task);
-    setIsModalOpen(true);
+  const handleOpenEditModal = (task) => {
+    dispatch(openEditModal(task));
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingTask(null);
+  const handleCloseModal = () => {
+    dispatch(closeModal());
   };
 
-  const addTask = (taskData) => {
-    const newTask = {
-      id: Date.now(),
-      completed: false,
-      ...taskData
-    };
-    setTasks(prevTasks => [...prevTasks, newTask]);
+  const handleAddTask = (taskData) => {
+    dispatch(addTask(taskData));
   };
 
-  const updateTask = (taskData) => {
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === editingTask.id 
-          ? { ...task, ...taskData } 
-          : task
-      )
-    );
-    setEditingTask(null);
+  const handleUpdateTask = (taskData) => {
+    dispatch(updateTask({ id: editingTask.id, ...taskData }));
   };
 
-  const deleteTask = (taskId) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+  const handleDeleteTask = (taskId) => {
+    dispatch(deleteTask(taskId));
   };
 
-  const toggleTaskCompletion = (taskId) => {
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === taskId 
-          ? { ...task, completed: !task.completed } 
-          : task
-      )
-    );
+  const handleToggleTaskCompletion = (taskId) => {
+    dispatch(toggleTaskCompletion(taskId));
   };
 
   if (isLoading) {
@@ -106,23 +80,30 @@ const TaskManager = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Tasks</h1>
-          <AddTaskButton onClick={openModal} />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Tasks</h1>
+            {hasActiveFilters && (
+              <p className="text-sm text-gray-600 mt-1">
+                Showing {filteredCount} of {totalCount} tasks
+              </p>
+            )}
+          </div>
+          <AddTaskButton onClick={handleOpenModal} />
         </div>
         
         <TaskList 
-          tasks={tasks} 
-          onDeleteTask={deleteTask} 
-          onToggleComplete={toggleTaskCompletion}
-          onEditTask={openEditModal}
+          tasks={filteredTasks} 
+          onDeleteTask={handleDeleteTask} 
+          onToggleComplete={handleToggleTaskCompletion}
+          onEditTask={handleOpenEditModal}
         />
       </div>
 
       {isModalOpen && (
         <TaskModal 
-          onClose={closeModal} 
-          onAddTask={addTask}
-          onUpdateTask={updateTask}
+          onClose={handleCloseModal} 
+          onAddTask={handleAddTask}
+          onUpdateTask={handleUpdateTask}
           editingTask={editingTask}
         />
       )}

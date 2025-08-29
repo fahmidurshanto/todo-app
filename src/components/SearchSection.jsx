@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectSearchValue,
+  selectFilterValue,
+  setSearchValue,
+  setFilterValue,
+  clearSearch
+} from '../store/slices/uiSlice';
 import { CiSearch } from "react-icons/ci";
 import { MdOutlineCancel } from "react-icons/md";
 
 const SearchSection = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [filterValue, setFilterValue] = useState("all");
+  const dispatch = useDispatch();
+  const searchValue = useSelector(selectSearchValue);
+  const filterValue = useSelector(selectFilterValue);
 
-  const clearSearch = () => {
-    setSearchValue("");
+  const handleClearSearch = () => {
+    dispatch(clearSearch());
+  };
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearchValue(e.target.value));
+  };
+
+  const handleFilterChange = (e) => {
+    dispatch(setFilterValue(e.target.value));
   };
 
   return (
@@ -30,7 +47,7 @@ const SearchSection = () => {
                 type="text"
                 placeholder="Search Tasks..."
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={handleSearchChange}
                 className="pl-10 pr-10 py-2 md:py-3 w-full bg-[#F8FAFC] rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button className="cursor-pointer absolute left-0 px-3 text-gray-500">
@@ -38,7 +55,7 @@ const SearchSection = () => {
               </button>
               {searchValue && (
                 <button
-                  onClick={clearSearch}
+                  onClick={handleClearSearch}
                   className="cursor-pointer absolute right-0 px-3 text-gray-500"
                 >
                   <MdOutlineCancel className="text-xl" />
@@ -51,7 +68,7 @@ const SearchSection = () => {
               <select
                 name="filters"
                 value={filterValue}
-                onChange={(e) => setFilterValue(e.target.value)}
+                onChange={handleFilterChange}
                 className="p-2 md:p-3 w-full md:w-auto bg-[#F8FAFC] rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">ALL</option>
