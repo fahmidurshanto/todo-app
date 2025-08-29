@@ -97,14 +97,7 @@ src/
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint for code quality
 
-### Environment Configuration
 
-Optional environment variables (copy `.env.example` to `.env.local`):
-```bash
-VITE_APP_NAME=Todo App
-VITE_APP_VERSION=1.0.0
-VITE_APP_DESCRIPTION=Modern Todo Application
-```
 
 ## Deployment
 
