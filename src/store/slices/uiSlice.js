@@ -7,6 +7,7 @@ const initialState = {
   editingTask: null,
   inlineEditingTaskId: null,
   inlineEditValue: '',
+  deletingTaskId: null,
 };
 
 const uiSlice = createSlice({
@@ -50,6 +51,12 @@ const uiSlice = createSlice({
       state.inlineEditingTaskId = null;
       state.inlineEditValue = '';
     },
+    startDeletion: (state, action) => {
+      state.deletingTaskId = action.payload;
+    },
+    completeDeletion: (state) => {
+      state.deletingTaskId = null;
+    },
   },
 });
 
@@ -64,6 +71,8 @@ export const {
   updateInlineEditValue,
   cancelInlineEdit,
   completeInlineEdit,
+  startDeletion,
+  completeDeletion,
 } = uiSlice.actions;
 
 // Selectors
@@ -73,5 +82,6 @@ export const selectIsModalOpen = (state) => state.ui.isModalOpen;
 export const selectEditingTask = (state) => state.ui.editingTask;
 export const selectInlineEditingTaskId = (state) => state.ui.inlineEditingTaskId;
 export const selectInlineEditValue = (state) => state.ui.inlineEditValue;
+export const selectDeletingTaskId = (state) => state.ui.deletingTaskId;
 
 export default uiSlice.reducer;

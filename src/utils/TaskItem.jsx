@@ -38,8 +38,8 @@ const TaskItem = ({
   return (
     <div className={`flex justify-between items-center p-4 border-b border-gray-200 ${
       task.completed 
-        ? 'bg-gray-50 hover:bg-gray-100' 
-        : 'hover:bg-gray-50'
+        ? 'bg-gray-50 hover:bg-gray-100 opacity-75' 
+        : 'hover:bg-gray-50 opacity-100'
     }`}>
       <div className="flex items-center gap-3">
         {!task.completed && (
@@ -51,7 +51,7 @@ const TaskItem = ({
           />
         )}
         {task.completed && (
-          <div className="w-4 h-4 flex items-center justify-center">
+          <div className="w-4 h-4 flex items-center justify-center animate__animated animate__bounceIn">
             <span className="text-green-600 text-lg font-bold">✓</span>
           </div>
         )}
@@ -70,7 +70,7 @@ const TaskItem = ({
             <h3 
               className={`text-lg font-semibold ${
                 task.completed 
-                  ? 'line-through text-gray-400' 
+                  ? 'line-through text-gray-400 animate__animated animate__fadeOut animate__slower' 
                   : 'text-gray-800 cursor-pointer hover:text-blue-600'
               }`}
               onDoubleClick={handleDoubleClick}
@@ -81,8 +81,8 @@ const TaskItem = ({
           )}
           <p className={`text-sm ${
             task.completed 
-              ? 'text-gray-400 line-through' 
-              : 'text-gray-500'
+              ? 'text-gray-400 line-through opacity-60' 
+              : 'text-gray-500 opacity-100'
           }`}>{task.description}</p>
         </div>
       </div>
@@ -93,14 +93,14 @@ const TaskItem = ({
           <>
             <button 
               onClick={onSaveInlineEdit}
-              className="text-green-600 hover:text-green-700"
+              className="text-green-600 hover:text-green-700 animate__animated animate__pulse animate__infinite"
               title="Save changes"
             >
               <FaCheck className='text-lg'/>
             </button>
             <button 
               onClick={onCancelInlineEdit}
-              className="text-red-500 hover:text-red-700"
+              className="text-red-500 hover:text-red-700 animate__animated animate__pulse animate__infinite"
               title="Cancel editing"
             >
               <FaTimes className='text-lg'/>
@@ -110,7 +110,7 @@ const TaskItem = ({
           !task.completed && (
             <button 
               onClick={onEdit}
-              className="text-gray-500 hover:text-blue-500"
+              className="text-gray-500 hover:text-blue-500 animate__animated animate__pulse animate__slower"
               title="Edit in modal"
             >
               <FaRegEdit className='text-xl'/>
@@ -120,7 +120,7 @@ const TaskItem = ({
         
         <button 
           onClick={onDelete}
-          className="text-red-500 hover:text-red-700 ml-2"
+          className="text-red-500 hover:text-red-700 ml-2 animate__animated animate__wobble animate__infinite"
           title="Delete task"
         >
           <FaTrash />

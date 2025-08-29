@@ -17,13 +17,16 @@ import {
   selectEditingTask,
   selectInlineEditingTaskId,
   selectInlineEditValue,
+  selectDeletingTaskId,
   openModal,
   openEditModal,
   closeModal,
   startInlineEdit,
   updateInlineEditValue,
   cancelInlineEdit,
-  completeInlineEdit
+  completeInlineEdit,
+  startDeletion,
+  completeDeletion
 } from '../store/slices/uiSlice';
 import TaskList from '../utils/TaskList';
 import TaskModal from '../utils/TaskModal';
@@ -40,6 +43,7 @@ const TaskManager = () => {
   const editingTask = useSelector(selectEditingTask);
   const inlineEditingTaskId = useSelector(selectInlineEditingTaskId);
   const inlineEditValue = useSelector(selectInlineEditValue);
+  const deletingTaskId = useSelector(selectDeletingTaskId);
 
   // Simulate loading on component mount
   useEffect(() => {
@@ -71,7 +75,14 @@ const TaskManager = () => {
   };
 
   const handleDeleteTask = (taskId) => {
-    dispatch(deleteTask(taskId));
+    // Start deletion animation
+    dispatch(startDeletion(taskId));
+    
+    // Wait for animation to complete, then delete
+    setTimeout(() => {
+      dispatch(deleteTask(taskId));
+      dispatch(completeDeletion());
+    }, 500); // Animate.css animation duration
   };
 
   const handleToggleTaskCompletion = (taskId) => {
@@ -142,6 +153,7 @@ const TaskManager = () => {
           onEditTask={handleOpenEditModal}
           inlineEditingTaskId={inlineEditingTaskId}
           inlineEditValue={inlineEditValue}
+          deletingTaskId={deletingTaskId}
           onStartInlineEdit={handleStartInlineEdit}
           onUpdateInlineEditValue={handleUpdateInlineEditValue}
           onSaveInlineEdit={handleSaveInlineEdit}
