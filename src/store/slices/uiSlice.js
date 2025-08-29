@@ -8,6 +8,7 @@ const initialState = {
   inlineEditingTaskId: null,
   inlineEditValue: '',
   deletingTaskId: null,
+  theme: 'light', // Theme state managed by Redux
 };
 
 const uiSlice = createSlice({
@@ -57,6 +58,12 @@ const uiSlice = createSlice({
     completeDeletion: (state) => {
       state.deletingTaskId = null;
     },
+    toggleTheme: (state) => {
+      state.theme = state.theme === 'light' ? 'dark' : 'light';
+    },
+    setTheme: (state, action) => {
+      state.theme = action.payload;
+    },
   },
 });
 
@@ -73,6 +80,8 @@ export const {
   completeInlineEdit,
   startDeletion,
   completeDeletion,
+  toggleTheme,
+  setTheme,
 } = uiSlice.actions;
 
 // Selectors
@@ -83,5 +92,6 @@ export const selectEditingTask = (state) => state.ui.editingTask;
 export const selectInlineEditingTaskId = (state) => state.ui.inlineEditingTaskId;
 export const selectInlineEditValue = (state) => state.ui.inlineEditValue;
 export const selectDeletingTaskId = (state) => state.ui.deletingTaskId;
+export const selectTheme = (state) => state.ui.theme;
 
 export default uiSlice.reducer;

@@ -6,7 +6,6 @@ const loadTasksFromStorage = () => {
     const storedTasks = localStorage.getItem('tasks');
     return storedTasks ? JSON.parse(storedTasks) : [];
   } catch (error) {
-    console.error('Error loading tasks from localStorage:', error);
     return [];
   }
 };
@@ -16,7 +15,6 @@ const saveTasksToStorage = (tasks) => {
   try {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   } catch (error) {
-    console.error('Error saving tasks to localStorage:', error);
     if (error.name === 'QuotaExceededError') {
       alert('Storage limit exceeded. Some tasks may not be saved.');
     }

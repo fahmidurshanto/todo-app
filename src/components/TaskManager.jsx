@@ -18,6 +18,7 @@ import {
   selectInlineEditingTaskId,
   selectInlineEditValue,
   selectDeletingTaskId,
+  selectTheme,
   openModal,
   openEditModal,
   closeModal,
@@ -44,6 +45,7 @@ const TaskManager = () => {
   const inlineEditingTaskId = useSelector(selectInlineEditingTaskId);
   const inlineEditValue = useSelector(selectInlineEditValue);
   const deletingTaskId = useSelector(selectDeletingTaskId);
+  const theme = useSelector(selectTheme);
 
   // Simulate loading on component mount
   useEffect(() => {
@@ -117,22 +119,34 @@ const TaskManager = () => {
 
   if (isLoading) {
     return (
-      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+      <div className={`p-6 ${
+        theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
+      } min-h-screen flex items-center justify-center transition-colors duration-300`}>
         <div className="text-center">
-          <p className="text-gray-600">Loading tasks...</p>
+          <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>
+            Loading tasks...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className={`p-6 ${
+      theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
+    } min-h-screen transition-colors duration-300`}>
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Tasks</h1>
+            <h1 className={`text-2xl font-bold ${
+              theme === 'dark' ? 'text-gray-200' : 'text-gray-800'
+            }`}>
+              Tasks
+            </h1>
             {hasActiveFilters && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className={`text-sm ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+              } mt-1`}>
                 Showing {filteredCount} of {totalCount} tasks
               </p>
             )}

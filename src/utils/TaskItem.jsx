@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectTheme } from '../store/slices/uiSlice';
 import { FaTrash, FaRegEdit, FaCheck, FaTimes } from 'react-icons/fa';
 import { CiCalendarDate } from "react-icons/ci";
 
@@ -15,6 +17,7 @@ const TaskItem = ({
   onSaveInlineEdit, 
   onCancelInlineEdit 
 }) => {
+  const theme = useSelector(selectTheme);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
@@ -36,10 +39,18 @@ const TaskItem = ({
   };
 
   return (
-    <div className={`flex justify-between items-center p-4 border-b border-gray-200 ${
+    <div className={`flex justify-between items-center p-4 border-b ${
+      theme === 'dark' ? 'border-gray-600' : 'border-gray-200'
+    } transition-colors duration-300 ${
       task.completed 
-        ? 'bg-gray-50 hover:bg-gray-100 opacity-75' 
-        : 'hover:bg-gray-50 opacity-100'
+        ? (theme === 'dark' 
+          ? 'bg-gray-700 hover:bg-gray-600 opacity-75' 
+          : 'bg-gray-50 hover:bg-gray-100 opacity-75'
+        )
+        : (theme === 'dark' 
+          ? 'hover:bg-gray-700 opacity-100' 
+          : 'hover:bg-gray-50 opacity-100'
+        )
     }`}>
       <div className="flex items-center gap-3">
         {!task.completed && (
@@ -63,15 +74,23 @@ const TaskItem = ({
               onChange={(e) => onUpdateInlineEditValue(e.target.value)}
               onKeyDown={handleKeyDown}
               onBlur={onSaveInlineEdit}
-              className="text-lg font-semibold bg-white border border-blue-500 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`text-lg font-semibold ${
+                theme === 'dark' ? 'bg-gray-700 border-blue-400 text-gray-100' : 'bg-white border-blue-500 text-gray-900'
+              } border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300`}
               autoFocus
             />
           ) : (
             <h3 
               className={`text-lg font-semibold ${
                 task.completed 
-                  ? 'line-through text-gray-400 animate__animated animate__fadeOut animate__slower' 
-                  : 'text-gray-800 cursor-pointer hover:text-blue-600'
+                  ? (theme === 'dark' 
+                    ? 'line-through text-gray-500 animate__animated animate__fadeOut animate__slower' 
+                    : 'line-through text-gray-400 animate__animated animate__fadeOut animate__slower'
+                  )
+                  : (theme === 'dark' 
+                    ? 'text-gray-200 cursor-pointer hover:text-blue-400' 
+                    : 'text-gray-800 cursor-pointer hover:text-blue-600'
+                  )
               }`}
               onDoubleClick={handleDoubleClick}
               title={!task.completed ? "Double-click to edit" : ""}
@@ -81,13 +100,21 @@ const TaskItem = ({
           )}
           <p className={`text-sm ${
             task.completed 
-              ? 'text-gray-400 line-through opacity-60' 
-              : 'text-gray-500 opacity-100'
+              ? (theme === 'dark' 
+                ? 'text-gray-500 line-through opacity-60' 
+                : 'text-gray-400 line-through opacity-60'
+              )
+              : (theme === 'dark' 
+                ? 'text-gray-400 opacity-100' 
+                : 'text-gray-500 opacity-100'
+              )
           }`}>{task.description}</p>
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-gray-600 flex items-center gap-2"><CiCalendarDate className='text-2xl'/> {formatDate(task.date)}</span>
+        <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} flex items-center gap-2`}>
+          <CiCalendarDate className='text-2xl'/> {formatDate(task.date)}
+        </span>
         
         {isInlineEditing ? (
           <>
@@ -110,7 +137,7 @@ const TaskItem = ({
           !task.completed && (
             <button 
               onClick={onEdit}
-              className="text-gray-500 hover:text-blue-500 animate__animated animate__pulse animate__slower"
+              className={`${theme === 'dark' ? 'text-gray-400 hover:text-blue-400' : 'text-gray-500 hover:text-blue-500'} animate__animated animate__pulse animate__slower`}
               title="Edit in modal"
             >
               <FaRegEdit className='text-xl'/>
@@ -120,7 +147,7 @@ const TaskItem = ({
         
         <button 
           onClick={onDelete}
-          className="text-red-500 hover:text-red-700 ml-2 animate__animated animate__wobble animate__infinite"
+          className="text-red-500 hover:text-red-700 ml-2"
           title="Delete task"
         >
           <FaTrash />
