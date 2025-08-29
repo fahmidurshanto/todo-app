@@ -66,6 +66,10 @@ const tasksSlice = createSlice({
     setTasks: (state, action) => {
       state.tasks = action.payload;
       saveTasksToStorage(state.tasks);
+    },
+    clearCompleted: (state) => {
+      state.tasks = state.tasks.filter(task => !task.completed);
+      saveTasksToStorage(state.tasks);
     }
   },
 });
@@ -76,7 +80,8 @@ export const {
   updateTask,
   deleteTask,
   toggleTaskCompletion,
-  setTasks
+  setTasks,
+  clearCompleted
 } = tasksSlice.actions;
 
 // Selectors
@@ -133,6 +138,11 @@ export const selectFilteredTaskCounts = (state) => {
     totalCount: allTasks.length,
     hasActiveFilters: state.ui.searchValue.trim() || state.ui.filterValue !== 'all'
   };
+};
+
+// Completed tasks count selector
+export const selectCompletedTasksCount = (state) => {
+  return state.tasks.tasks.filter(task => task.completed).length;
 };
 
 export default tasksSlice.reducer;

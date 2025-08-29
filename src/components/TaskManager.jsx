@@ -4,10 +4,12 @@ import {
   selectIsLoading,
   selectFilteredTasks,
   selectFilteredTaskCounts,
+  selectCompletedTasksCount,
   addTask,
   updateTask,
   deleteTask,
   toggleTaskCompletion,
+  clearCompleted,
   setLoading
 } from '../store/slices/tasksSlice';
 import {
@@ -20,11 +22,13 @@ import {
 import TaskList from '../utils/TaskList';
 import TaskModal from '../utils/TaskModal';
 import AddTaskButton from '../utils/AddTaskButton';
+import ClearCompletedButton from '../utils/ClearCompletedButton';
 
 const TaskManager = () => {
   const dispatch = useDispatch();
   const filteredTasks = useSelector(selectFilteredTasks);
   const { filteredCount, totalCount, hasActiveFilters } = useSelector(selectFilteredTaskCounts);
+  const completedTasksCount = useSelector(selectCompletedTasksCount);
   const isLoading = useSelector(selectIsLoading);
   const isModalOpen = useSelector(selectIsModalOpen);
   const editingTask = useSelector(selectEditingTask);
@@ -66,6 +70,10 @@ const TaskManager = () => {
     dispatch(toggleTaskCompletion(taskId));
   };
 
+  const handleClearCompleted = () => {
+    dispatch(clearCompleted());
+  };
+
   if (isLoading) {
     return (
       <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
@@ -88,7 +96,13 @@ const TaskManager = () => {
               </p>
             )}
           </div>
-          <AddTaskButton onClick={handleOpenModal} />
+          <div className="flex items-center gap-3">
+            <ClearCompletedButton 
+              onClick={handleClearCompleted}
+              disabled={completedTasksCount === 0}
+            />
+            <AddTaskButton onClick={handleOpenModal} />
+          </div>
         </div>
         
         <TaskList 
