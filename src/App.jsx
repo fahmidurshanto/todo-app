@@ -1,5 +1,6 @@
-import Header from "./components/Header/Header"
-import SearchSection from "./components/Header/SearchSection"
+import Header from "./components/Header"
+import SearchSection from "./components/SearchSection"
+import TaskManager from "./components/TaskManager"
 
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
    <div className="bg-[#F4F4F5] pt-2.5 h-screen" style={{fontFamily:"Inter" }}>
     <Header/>
     <SearchSection/>
+    <TaskManager/>
    </div>
   )
 }
